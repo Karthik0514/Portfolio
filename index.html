@@ -1,0 +1,232 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surya Sailendra Karthik - E-Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav class="container nav-container">
+            <div class="logo">Karthik</div>
+            <ul class="nav-links">
+                <li><a href="#about">About</a></li>
+                <li><a href="#experience">Experience</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#education">Education</a></li>
+                <li><a href="#achievements">Achievements</a></li>
+                <li><a href="#extracurricular">Extracurricular</a></li>
+                <li><a href="#hobbies">Hobbies</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <button class="mode-toggle" onclick="toggleMode()">🌙</button>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section id="about" class="about-section">
+            <div class="photo-container">
+                <img src="profile.jpg" alt="Surya Sailendra Karthik" class="profile-photo">
+            </div>
+
+            <h1>Surya Sailendra Karthik</h1>
+            <p class="title">Software Developer</p>
+            <p class="description">A 3rd year CSE Student at IIIT Sri City.</p>
+            <div class="contact-details">
+                <p>📧 <a href="mailto:sskarthik0423@gmail.com">sskarthik0423@gmail.com</a></p>
+                <p>📞 +91 9346970264</p>
+                <p>📍 Chennai, India</p>
+            </div>
+            <div class="social-buttons">
+                <a href="your-resume.pdf" class="social-btn" aria-label="Resume">📄</a>
+                <a href="#" class="social-btn" aria-label="Website">🌐</a>
+                <a href="https://linkedin.com/in/yourusername" class="social-btn" aria-label="LinkedIn">in</a>
+                <a href="https://github.com/yourusername" class="social-btn" aria-label="GitHub">🐙</a>
+            </div>
+        </section>
+
+        <section id="experience">
+            <h1>Experience</h1>
+            <ul class="projects-list">
+                <li class="project-item">
+                    <h2>AI Generalist Intern</h2>
+                    <p>As an AI Generalist Intern, I worked across product, project management, and development to help build an AI-driven product from the ground up. I defined user flows, researched tools and platforms, broke down features into sprints, and aligned engineering with product milestones. I also built internal tools, contributed to both frontend and backend systems, and implemented AI integrations with a focus on scalability and maintainability.</p>
+                </li>
+                <li class="project-item">
+                    <h2>Web3SSH Management Team</h2>
+                    <p>As a Web3ssh Management Team Member, I secured sponsorships, collaborated with students from other colleges to organize the online event, and managed the Discord server to ensure smooth communication. I also coordinated with speakers and participants, supported event logistics, and helped promote the event across platforms to maximize engagement.</p>
+                </li>
+            </ul>
+        </section>
+
+        <section id="skills">
+            <h1>Skills</h1>
+            <ul class="skills-list">
+                <li class="skill-item">HTML</li>
+                <li class="skill-item">CSS</li>
+                <li class="skill-item">JavaScript</li>
+                <li class="skill-item">Python</li>
+                <li class="skill-item">Java</li>
+                <li class="skill-item">Django</li>
+                <li class="skill-item">TensorFlow</li>
+                <li class="skill-item">C++</li>
+                <li class="skill-item">Node.js</li>
+                <li class="skill-item">Express.js</li>
+                <li class="skill-item">Artificial Intelligence</li>
+                <li class="skill-item">MongoDB</li>
+                <li class="skill-item">MySQL</li>
+                <li class="skill-item">PyTorch</li>
+            </ul>
+        </section>
+
+        <section id="projects">
+            <h1>Projects</h1>
+            <ul class="projects-list">
+                <li class="project-item">
+                    <h2>Smart Weather App</h2>
+                    <p>AI-powered weather app with real-time forecasts, song & clothing recommendations, fun facts, and daily history — all in a sleek PyQt5 UI.</p>
+                    <a href="https://github.com/Karthik0514/Smart-Weather-App.git" target="_blank" class="project-btn">View on GitHub</a>
+                </li>
+                <li class="project-item">
+                    <h2>Bubble Trouble-powered by Unity</h2>
+                    <p>Bubble Trouble Bubble Trouble is a 2D obstacle-platformer inspired by classics like Mario, but with its own twist and storyline. Guide your character through five challenging levels filled with traps, puzzles, and enemies—all leading up to the ultimate showdown with El Bub, the main villain.</p>
+                    <a href="https://github.com/Karthik0514/Bubble-trouble---Made-using-Unity-.git" target="_blank" class="project-btn">View on GitHub</a>
+                </li>
+                 <li class="project-item">
+                    <h2>PyGame Basic Game</h2>
+                    <p>this was my first game made with pygame which is a library on python and shoutout to Tech with Tim on YouTube for the tutorial https://www.youtube.com/watch?v=i6xMBig-pP4&list=PLzMcBGfZo4-lp3jAExUCewBfMx3UZFkh5&ab_channel=TechWithTim I've made a few changes to the game to suit my needs.</p>
+                    <a href="https://github.com/Karthik0514/Bubble-trouble---Made-using-Unity-.git" target="_blank" class="project-btn">View on GitHub</a>
+                </li>
+            </ul>
+        </section>
+
+        <section id="education">
+            <h1>Education</h1>
+            <div class="education-card">
+                <h2>Bachelor of Technology in Computer Science Engineering</h2>
+                <h3>Indian Institute of Information Technology Sri City</h3>
+                <div class="edu-details">
+                <p>📅 May 2019</p>
+                <p>📍 Sri City, Andhra Pradesh, India</p>
+            </div>
+        </section>
+
+
+        <section id="achievements">
+            <h1>Achievements</h1>
+            <div class="achievements-grid">
+                <div class="achievement-card">
+                    <div class="achievement-img">
+                        <img src="achievement1.jpg" alt="Hackathon Winner">
+                    </div>
+            <div class="achievement-content">
+            <h2>🏆 Hackathon First runner-up</h2>
+            <h3>Hack The Threat @ Abhisarga 2025</h3>
+            <p class="achievement-date">March 2025</p>
+            <p class="achievement-desc">First runner-up at the Hack the Threat Hackathon at Abhisarga 2025 at IIIT Sri City.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="extracurricular">
+            <h1>Extracurricular</h1>
+            <div class="extra-card">
+                <div class="extra-card-header">
+                    <h2>Sports Coordinator & Student Volunteer</h2>
+                </div>
+
+                <div class="extra-card-body">
+                    <p>
+                    As a Sports Coordinator, I organized and managed inter- and intra-college sports events, handling scheduling,
+                    logistics, and team coordination to ensure smooth execution. I played cricket competitively and mentored junior
+                    players to build stronger teams. Besides sports, I supported cultural and technical fests by coordinating volunteers,
+                    stage logistics, and participant communication. These roles strengthened my leadership, event management, and
+                    cross-team collaboration skills.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+
+        <section id="hobbies">
+            <h1>Hobbies & Interests</h1>
+            <div class="hobbies-grid">
+               <div class="hobby-card">
+                    <div class="hobby-img">
+                        <img src="cricket.png" alt="cricket">
+                    </div>
+                    <div class="hobby-content">
+                            <h2>🏏 Cricket</h2>
+                            <p>I am an avid cricket player and i love playing the sport.</p>
+                    </div>
+                </div>
+
+                <div class="hobby-card">
+                    <div class="hobby-img">
+                        <img src="read.jpg" alt="cricket">
+                    </div>
+                    <div class="hobby-content">
+                            <h2> 📔Reading</h2>
+                            <p>Books act as a great way to escape reality</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <section id="contact">
+            <h1>Contact</h1>
+            <p>Email: sskarthik0423@gmail.com</p>
+            <p>Phone: +91 9346970264</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Karthik. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
