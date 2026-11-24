@@ -23,6 +23,13 @@
         menuBtn.setAttribute('aria-expanded', open);
         menuBtn.textContent = open ? '✕' : '☰';
     });
+    document.addEventListener('click', function (e) {
+        if (navLinks.classList.contains('open') && !navLinks.contains(e.target) && !menuBtn.contains(e.target)) {
+            navLinks.classList.remove('open');
+            menuBtn.setAttribute('aria-expanded', 'false');
+            menuBtn.textContent = '☰';
+        }
+    });
     navLinks.addEventListener('click', function (e) {
         if (e.target.tagName === 'A') {
             navLinks.classList.remove('open');
@@ -87,6 +94,7 @@
     // Cursor glow
     var glow = document.getElementById('cursorGlow');
     window.addEventListener('mousemove', function (e) {
+        if (window.matchMedia('(hover: none)').matches) return;
         glow.style.left = e.clientX + 'px';
         glow.style.top = e.clientY + 'px';
     });
