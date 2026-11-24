@@ -31,7 +31,7 @@
     });
 
     // Typing effect
-    var roles = ['AI-powered products', 'computer vision systems', 'full-stack web apps', 'games in Unity'];
+    var roles = ['AI-powered products', 'computer vision systems', 'full-stack web apps', 'LLM-powered tools', 'games in Unity'];
     var typed = document.getElementById('typed');
     var ri = 0, ci = 0, deleting = false;
     function type() {
