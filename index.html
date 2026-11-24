@@ -1,251 +1,290 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surya Sailendra Karthik - E-Portfolio</title>
+    <title>Surya Sailendra Karthik | Software Developer</title>
+    <meta name="description" content="Portfolio of Surya Sailendra Karthik, 3rd year CSE student at IIIT Sri City building AI-driven products and software.">
+    <meta name="theme-color" content="#0b0b14">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <nav class="container nav-container">
-            <div class="logo">Karthik</div>
-            <ul class="nav-links">
+    <div class="progress" id="progress"></div>
+    <div class="bg" aria-hidden="true">
+        <span class="blob b1"></span>
+        <span class="blob b2"></span>
+        <span class="blob b3"></span>
+        <span class="grid"></span>
+    </div>
+    <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+
+    <header class="site-header">
+        <nav class="nav container">
+            <a href="#home" class="logo">karthik<span>.</span></a>
+            <ul class="nav-links" id="navLinks">
                 <li><a href="#about">About</a></li>
                 <li><a href="#experience">Experience</a></li>
                 <li><a href="#skills">Skills</a></li>
                 <li><a href="#projects">Projects</a></li>
                 <li><a href="#education">Education</a></li>
                 <li><a href="#achievements">Achievements</a></li>
-                <li><a href="#extracurricular">Extracurricular</a></li>
-                <li><a href="#hobbies">Hobbies</a></li>
+                <li><a href="#beyond">Beyond Code</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
-            <button class="mode-toggle" onclick="toggleMode()">🌙</button>
+            <div class="nav-actions">
+                <button class="icon-btn" id="themeToggle" aria-label="Toggle theme">🌙</button>
+                <button class="icon-btn menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false">☰</button>
+            </div>
         </nav>
     </header>
 
-    <main class="container">
-        <section id="about" class="about-section">
-            <div class="photo-container">
-                <img src="profile.jpg" alt="Surya Sailendra Karthik" class="profile-photo">
+    <main>
+        <!-- HERO -->
+        <section id="home" class="hero container">
+            <div class="hero-text reveal">
+                <p class="eyebrow"><span class="dot"></span> Open to internships &amp; collaborations</p>
+                <h1>Hi, I'm <span class="grad">Surya Sailendra Karthik</span></h1>
+                <p class="typed-line">I build <span id="typed" class="typed"></span><span class="caret">|</span></p>
+                <p class="lead">3rd year CSE student at IIIT Sri City. I turn ideas into working products, from AI models and computer vision to full-stack apps and games.</p>
+                <div class="cta">
+                    <a href="#projects" class="btn primary">View my work</a>
+                    <a href="your-resume.pdf" class="btn ghost">Resume ↓</a>
+                </div>
+                <div class="socials">
+                    <a href="https://github.com/Karthik0514" target="_blank" rel="noopener" aria-label="GitHub">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.18-3.1-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.84 1.18 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+                    </a>
+                    <a href="https://www.linkedin.com/in/karthik-surya-sailendra-7096a4344" target="_blank" rel="noopener" aria-label="LinkedIn">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z"/></svg>
+                    </a>
+                    <a href="mailto:sskarthik0423@gmail.com" aria-label="Email">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+                    </a>
+                </div>
             </div>
 
-            <h1>Surya Sailendra Karthik</h1>
-            <p class="title">Software Developer</p>
-            <p class="description">3rd year CSE Student at IIIT Sri City.</p>
-            <div class="contact-details">
-                <p>📧 <a href="mailto:sskarthik0423@gmail.com">sskarthik0423@gmail.com</a></p>
-                <p>📞 +91 9346970264</p>
-                <p>📍 Chennai, India</p>
-            </div>
-            <div class="social-buttons">
-                <a href="your-resume.pdf" class="social-btn" aria-label="Resume">📄</a>
-                <a href="#" class="social-btn" aria-label="Website">🌐</a>
-                <a href="www.linkedin.com/in/karthik-surya-sailendra-7096a4344" class="social-btn" aria-label="LinkedIn">in</a>
-                <a href="https://github.com/Karthik0514" class="social-btn" aria-label="GitHub">🐈‍⬛</a>
-            </div>
-        </section>
-
-        <section id="experience">
-            <h1>Experience</h1>
-            <ul class="projects-list">
-                <li class="project-item">
-                    <h2>AI Generalist Intern</h2>
-                    <p>As an AI Generalist Intern, I worked across product, project management, and development to help build an AI-driven product from the ground up. I defined user flows, researched tools and platforms, broke down features into sprints, and aligned engineering with product milestones. I also built internal tools, contributed to both frontend and backend systems, and implemented AI integrations with a focus on scalability and maintainability.</p>
-                </li>
-                <li class="project-item">
-                    <h2>Web3SSH Management Team</h2>
-                    <p>As a Web3ssh Management Team Member, I secured sponsorships, collaborated with students from other colleges to organize the online event, and managed the Discord server to ensure smooth communication. I also coordinated with speakers and participants, supported event logistics, and helped promote the event across platforms to maximize engagement.</p>
-                </li>
-            </ul>
-        </section>
-
-        <section id="skills">
-            <h1>Skills</h1>
-            <ul class="skills-list">
-                <li class="skill-item">HTML</li>
-                <li class="skill-item">CSS</li>
-                <li class="skill-item">JavaScript</li>
-                <li class="skill-item">Python</li>
-                <li class="skill-item">Java</li>
-                <li class="skill-item">Django</li>
-                <li class="skill-item">TensorFlow</li>
-                <li class="skill-item">C++</li>
-                <li class="skill-item">Node.js</li>
-                <li class="skill-item">Express.js</li>
-                <li class="skill-item">Artificial Intelligence</li>
-                <li class="skill-item">MongoDB</li>
-                <li class="skill-item">MySQL</li>
-                <li class="skill-item">PyTorch</li>
-                <li class="skill-item">Big Data Processing</li>
-                <li class="skill-item">Data Analytics</li>
-                <li class="skill-item">Speech recognition</li>
-                <li class="skill-item">Team collaboration</li>
-            </ul>
-        </section>
-
-        <section id="projects">
-            <h1>Projects</h1>
-            <ul class="projects-list">
-                <li class="project-item">
-                    <h2>Smart Weather App</h2>
-                    <p>AI-powered weather app with real-time forecasts, song & clothing recommendations, fun facts, and daily history — all in a sleek PyQt5 UI.</p>
-                    <a href="https://github.com/Karthik0514/Smart-Weather-App.git" target="_blank" class="project-btn">View on GitHub</a>
-                </li>
-                <li class="project-item">
-                    <h2>Bubble Trouble-powered by Unity</h2>
-                    <p>Bubble Trouble Bubble Trouble is a 2D obstacle-platformer inspired by classics like Mario, but with its own twist and storyline. Guide your character through five challenging levels filled with traps, puzzles, and enemies—all leading up to the ultimate showdown with El Bub, the main villain.</p>
-                    <a href="https://github.com/Karthik0514/Bubble-trouble---Made-using-Unity-.git" target="_blank" class="project-btn">View on GitHub</a>
-                </li>
-                 <li class="project-item">
-                    <h2>PaleoCV</h2>
-                    <p>PaleoCV is a modular explainable AI framework for palaeontological image analysis. The project integrates transfer learning, Grad-CAM explainability, segmentation, morphological analysis and interactive pseudo-3D reconstruction for fossil classification under limited-data conditions.</p>
-                    <a href="https://github.com/Karthik0514/PaleoCV" target="_blank" class="project-btn">View on GitHub</a>
-                </li>
-                <li class="project-item">
-                    <h2>FocusMate+</h2>
-                    <p>FocusMate+ is an intelligent, real-time productivity assistant that helps students and professionals stay focused while studying or working. It uses computer vision, machine learning, and gaze detection via your webcam to track your attention, detect distractions, and provide actionable feedback — all wrapped in a beautiful dark-mode interface.</p>
-                    <a href="https://github.com/Karthik0514/FocusMate" target="_blank" class="project-btn">View on GitHub</a>
-                </li>
-            </ul>
-        </section>
-
-        <section id="education">
-            <h1>Education</h1>
-            <div class="education-card">
-                <h2>Bachelor of Technology in Computer Science Engineering</h2>
-                <h3>Indian Institute of Information Technology Sri City</h3>
-                <div class="edu-details">
-                <p>📅 June 2027(Ongoing)</p>
-                <p>📍 Sri City, Andhra Pradesh, India</p>
-            </div>
-        </section>
-
-
-        <section id="achievements">
-            <h1>Achievements</h1>
-            <div class="achievements-grid">
-                <div class="achievement-card">
-                    <div class="achievement-img">
-                        <img src="achievement1.jpg" alt="Hackathon Winner">
+            <div class="hero-photo reveal">
+                <div class="photo-ring">
+                    <div class="photo-inner">
+                        <img src="profile.jpg" alt="Surya Sailendra Karthik" class="profile-photo">
+                        <span class="photo-fallback">SK</span>
                     </div>
-            <div class="achievement-content">
-            <h2>🏆 Hackathon First runner-up</h2>
-            <h3>Hack The Threat @ Abhisarga 2025</h3>
-            <p class="achievement-date">March 2025</p>
-            <p class="achievement-desc">First runner-up at the Hack the Threat Hackathon at Abhisarga 2025 at IIIT Sri City.</p>
+                </div>
+                <div class="chip c1">🧠 AI / ML</div>
+                <div class="chip c2">⚡ Full-stack</div>
+                <div class="chip c3">🎮 Game dev</div>
+            </div>
+        </section>
+
+        <!-- ABOUT -->
+        <section id="about" class="container section">
+            <div class="section-head reveal">
+                <span class="kicker">01</span>
+                <h2>About me</h2>
+            </div>
+            <div class="about-grid">
+                <div class="glass reveal about-copy">
+                    <p>I'm a Software Developer and 3rd year Computer Science student at <strong>IIIT Sri City</strong>. I like working across the stack, from shaping a product and planning sprints to training models and shipping the interface.</p>
+                    <p>Outside of code, I play cricket competitively, organise events and read a lot.</p>
+                </div>
+                <div class="stats reveal">
+                    <div class="glass stat"><b data-count="4">0</b><span>Projects built</span></div>
+                    <div class="glass stat"><b data-count="2">0</b><span>Internships &amp; teams</span></div>
+                    <div class="glass stat"><b data-count="18">0</b><span>Technologies</span></div>
+                    <div class="glass stat"><b>#2</b><span>Hackathon finish</span></div>
+                </div>
+            </div>
+            <div class="contact-pills reveal">
+                <a class="pill" href="mailto:sskarthik0423@gmail.com">📧 sskarthik0423@gmail.com</a>
+                <a class="pill" href="tel:+919346970264">📞 +91 9346970264</a>
+                <span class="pill">📍 Chennai, India</span>
+            </div>
+        </section>
+
+        <!-- EXPERIENCE -->
+        <section id="experience" class="container section">
+            <div class="section-head reveal">
+                <span class="kicker">02</span>
+                <h2>Experience</h2>
+            </div>
+            <div class="timeline">
+                <article class="t-item reveal">
+                    <span class="t-dot"></span>
+                    <div class="glass tilt">
+                        <h3>AI Generalist Intern</h3>
+                        <p>Worked across product, project management and development to help build an AI-driven product from the ground up. Defined user flows, researched tools and platforms, broke features into sprints and aligned engineering with product milestones. Built internal tools, contributed to frontend and backend systems, and implemented AI integrations with a focus on scalability and maintainability.</p>
+                        <div class="tags"><span>Product</span><span>Backend</span><span>Frontend</span><span>AI integration</span></div>
+                    </div>
+                </article>
+                <article class="t-item reveal">
+                    <span class="t-dot"></span>
+                    <div class="glass tilt">
+                        <h3>Web3SSH Management Team</h3>
+                        <p>Secured sponsorships, collaborated with students from other colleges to organise the online event, and managed the Discord server for smooth communication. Coordinated with speakers and participants, supported logistics, and promoted the event across platforms to maximise engagement.</p>
+                        <div class="tags"><span>Sponsorships</span><span>Community</span><span>Logistics</span></div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- SKILLS -->
+        <section id="skills" class="container section">
+            <div class="section-head reveal">
+                <span class="kicker">03</span>
+                <h2>Skills</h2>
+            </div>
+            <div class="skills-grid">
+                <div class="glass reveal skill-group">
+                    <h3>Languages</h3>
+                    <div class="tags"><span>Python</span><span>Java</span><span>C++</span><span>JavaScript</span><span>HTML</span><span>CSS</span></div>
+                </div>
+                <div class="glass reveal skill-group">
+                    <h3>Backend &amp; Frameworks</h3>
+                    <div class="tags"><span>Node.js</span><span>Express.js</span><span>Django</span></div>
+                </div>
+                <div class="glass reveal skill-group">
+                    <h3>AI &amp; ML</h3>
+                    <div class="tags"><span>Artificial Intelligence</span><span>TensorFlow</span><span>PyTorch</span><span>Speech Recognition</span></div>
+                </div>
+                <div class="glass reveal skill-group">
+                    <h3>Data</h3>
+                    <div class="tags"><span>MongoDB</span><span>MySQL</span><span>Big Data Processing</span><span>Data Analytics</span></div>
+                </div>
+                <div class="glass reveal skill-group">
+                    <h3>Soft skills</h3>
+                    <div class="tags"><span>Team collaboration</span><span>Leadership</span><span>Event management</span></div>
                 </div>
             </div>
         </section>
 
-        <section id="extracurricular">
-        <h1>Extracurricular</h1>
-
-        <div class="extra-card">
-            <div class="extra-card-header">
-                <h2>Sports Coordinator</h2>
+        <!-- PROJECTS -->
+        <section id="projects" class="container section">
+            <div class="section-head reveal">
+                <span class="kicker">04</span>
+                <h2>Projects</h2>
             </div>
-            <div class="extra-card-body">
-                <p>
-                    As a Sports Coordinator, I organized and managed inter- and intra-college sports events, handling scheduling,
-                    logistics, and team coordination to ensure smooth execution. I played cricket competitively and mentored junior
-                    players to build stronger teams. These roles strengthened my leadership, event management, and cross-team
-                    collaboration skills.
-                </p>
-            </div>
-        </div>
-
-        <div class="extra-card">
-            <div class="extra-card-header">
-                <h2>Student Volunteer</h2>
-            </div>
-            <div class="extra-card-body">
-                <p>
-                    As a Student Volunteer, I supported cultural and technical fests by coordinating volunteers, stage logistics,
-                    and participant communication. These roles strengthened my leadership, event management, and cross-team
-                    collaboration skills.
-                </p>
-            </div>
-        </div>
-        </section>
-
-
-        <section id="hobbies">
-            <h1>Hobbies & Interests</h1>
-            <div class="hobbies-grid">
-               <div class="hobby-card">
-                    <div class="hobby-img">
-                        <img src="cricket.png" alt="cricket">
-                    </div>
-                    <div class="hobby-content">
-                            <h2>🏏 Cricket</h2>
-                            <p>I am an avid cricket player and I love playing the sport.</p>
-                    </div>
-                </div>
-
-                <div class="hobby-card">
-                    <div class="hobby-img">
-                        <img src="read.jpg" alt="cricket">
-                    </div>
-                    <div class="hobby-content">
-                            <h2> 📔Reading</h2>
-                            <p>Books act as a great way to escape reality</p>
-                    </div>
-                </div>
-
+            <div class="projects-grid">
+                <article class="glass project reveal tilt">
+                    <div class="p-top"><span class="p-icon">🔬</span><span class="p-num">01</span></div>
+                    <h3>PaleoCV</h3>
+                    <p>A modular explainable AI framework for palaeontological image analysis. Combines transfer learning, Grad-CAM explainability, segmentation, morphological analysis and interactive pseudo-3D reconstruction for fossil classification under limited-data conditions.</p>
+                    <div class="tags"><span>Transfer learning</span><span>Grad-CAM</span><span>Computer vision</span></div>
+                    <a href="https://github.com/Karthik0514/PaleoCV" target="_blank" rel="noopener" class="link">View on GitHub →</a>
+                </article>
+                <article class="glass project reveal tilt">
+                    <div class="p-top"><span class="p-icon">🎯</span><span class="p-num">02</span></div>
+                    <h3>FocusMate+</h3>
+                    <p>A real-time productivity assistant for students and professionals. Uses computer vision, machine learning and webcam gaze detection to track attention, detect distractions and give actionable feedback, in a dark-mode interface.</p>
+                    <div class="tags"><span>Gaze detection</span><span>ML</span><span>Real-time</span></div>
+                    <a href="https://github.com/Karthik0514/FocusMate" target="_blank" rel="noopener" class="link">View on GitHub →</a>
+                </article>
+                <article class="glass project reveal tilt">
+                    <div class="p-top"><span class="p-icon">🎮</span><span class="p-num">03</span></div>
+                    <h3>Bubble Trouble</h3>
+                    <p>A 2D obstacle-platformer made in Unity, inspired by classics like Mario with its own twist and storyline. Guide your character through five levels of traps, puzzles and enemies, leading to a showdown with the villain El Bub.</p>
+                    <div class="tags"><span>Unity</span><span>C#</span><span>2D platformer</span></div>
+                    <a href="https://github.com/Karthik0514/Bubble-trouble---Made-using-Unity-.git" target="_blank" rel="noopener" class="link">View on GitHub →</a>
+                </article>
+                <article class="glass project reveal tilt">
+                    <div class="p-top"><span class="p-icon">🌤️</span><span class="p-num">04</span></div>
+                    <h3>Smart Weather App</h3>
+                    <p>An AI-powered weather app with real-time forecasts, song and clothing recommendations, fun facts and daily history, all in a sleek PyQt5 interface.</p>
+                    <div class="tags"><span>Python</span><span>PyQt5</span><span>AI</span></div>
+                    <a href="https://github.com/Karthik0514/Smart-Weather-App.git" target="_blank" rel="noopener" class="link">View on GitHub →</a>
+                </article>
             </div>
         </section>
 
+        <!-- EDUCATION -->
+        <section id="education" class="container section">
+            <div class="section-head reveal">
+                <span class="kicker">05</span>
+                <h2>Education</h2>
+            </div>
+            <div class="glass edu reveal">
+                <div class="edu-icon">🎓</div>
+                <div>
+                    <h3>B.Tech in Computer Science Engineering</h3>
+                    <p class="edu-school">Indian Institute of Information Technology Sri City</p>
+                    <div class="contact-pills">
+                        <span class="pill">📅 Expected June 2027</span>
+                        <span class="pill">📍 Sri City, Andhra Pradesh</span>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        <section id="contact">
-            <h1>Contact</h1>
-            <p>Email: sskarthik0423@gmail.com</p>
-            <p>Phone: +91 9346970264</p>
+        <!-- ACHIEVEMENTS -->
+        <section id="achievements" class="container section">
+            <div class="section-head reveal">
+                <span class="kicker">06</span>
+                <h2>Achievements</h2>
+            </div>
+            <div class="glass achievement reveal">
+                <div class="ach-img">
+                    <img src="achievement1.jpg" alt="Hack The Threat hackathon">
+                    <span class="ach-fallback">🏆</span>
+                </div>
+                <div class="ach-body">
+                    <span class="badge">March 2025</span>
+                    <h3>Hackathon First Runner-up</h3>
+                    <p class="edu-school">Hack The Threat @ Abhisarga 2025</p>
+                    <p>First runner-up at the Hack the Threat hackathon, held at Abhisarga 2025 at IIIT Sri City.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- BEYOND CODE -->
+        <section id="beyond" class="container section">
+            <div class="section-head reveal">
+                <span class="kicker">07</span>
+                <h2>Beyond code</h2>
+            </div>
+            <div class="beyond-grid">
+                <div class="glass reveal">
+                    <h3>🏅 Sports Coordinator</h3>
+                    <p>Organised and managed inter- and intra-college sports events, handling scheduling, logistics and team coordination. Played cricket competitively and mentored junior players to build stronger teams.</p>
+                </div>
+                <div class="glass reveal">
+                    <h3>🙌 Student Volunteer</h3>
+                    <p>Supported cultural and technical fests by coordinating volunteers, stage logistics and participant communication, strengthening leadership and cross-team collaboration.</p>
+                </div>
+                <div class="glass hobby reveal">
+                    <div class="hobby-img"><img src="cricket.png" alt="Cricket"><span class="ach-fallback">🏏</span></div>
+                    <div>
+                        <h3>🏏 Cricket</h3>
+                        <p>An avid player who loves the sport.</p>
+                    </div>
+                </div>
+                <div class="glass hobby reveal">
+                    <div class="hobby-img"><img src="read.jpg" alt="Reading"><span class="ach-fallback">📔</span></div>
+                    <div>
+                        <h3>📔 Reading</h3>
+                        <p>Books are a great way to escape reality.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACT -->
+        <section id="contact" class="container section">
+            <div class="glass contact reveal">
+                <h2>Let's build something <span class="grad">together</span></h2>
+                <p>Have an idea, an opportunity or just want to say hi? My inbox is open.</p>
+                <div class="cta center">
+                    <a href="mailto:sskarthik0423@gmail.com" class="btn primary">Say hello</a>
+                    <a href="https://www.linkedin.com/in/karthik-surya-sailendra-7096a4344" target="_blank" rel="noopener" class="btn ghost">LinkedIn</a>
+                </div>
+                <p class="small">📞 +91 9346970264</p>
+            </div>
         </section>
     </main>
 
-    <footer>
-        <p>&copy; 2025 Karthik. All rights reserved.</p>
+    <footer class="site-footer">
+        <p>&copy; <span id="year">2025</span> Karthik. Built by hand with HTML, CSS and JS.</p>
     </footer>
 
     <script src="script.js"></script>
